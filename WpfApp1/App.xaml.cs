@@ -23,8 +23,16 @@ public partial class App : Application
         {
             DataContext = provider.GetRequiredService<MainViewModel>()
         });
+        services.AddSingleton<VeryMainView>(provider => new VeryMainView()
+        {
+            DataContext = provider.GetRequiredService<VeryMainViewModel>()
+        });
         services.AddSingleton<MainViewModel>();
+        services.AddSingleton<SettingsViewModel>();
+        
+        services.AddSingleton<VeryMainViewModel>();
         services.AddSingleton<LoginViewModel>();
+        services.AddSingleton<RegisterViewModel>();
         services.AddSingleton<INavigationService, NavigationService>();
         
 
@@ -36,7 +44,10 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        // var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        // mainWindow.Show();
+        // base.OnStartup(e);
+        var mainWindow = _serviceProvider.GetRequiredService<VeryMainView>();
         mainWindow.Show();
         base.OnStartup(e);
     }
