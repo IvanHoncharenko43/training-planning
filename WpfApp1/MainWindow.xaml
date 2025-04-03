@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
+        xmlns:componentControl="clr-namespace:WpfApp1.ComponentControl"
         Title="Вхід / Реєстрація" 
         Height="400" 
         Width="350"
@@ -66,11 +67,12 @@
                           HorizontalAlignment="Center" 
                           Margin="0,0,0,20"/>
                 <StackPanel x:Name="LoginForm">
-                    <TextBox x:Name="LoginEmail" 
-                            Text="Email" 
+                    <TextBox x:Name="LogEmail" 
+                            Text="{Binding LoginEmail}" 
                             GotFocus="TextBox_GotFocus"/>
-                    <PasswordBox x:Name="LoginPassword" 
-                               Password="Пароль" />
+                    <componentControl:BindablePasswordBox
+                                 Password="{Binding LoginPassword,
+                                 UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     <Button Content="Увійти" Click="LoginButton_Click"/>
                     <TextBlock Text="Немає акаунту? Зареєструйтесь" 
                               Foreground="#FF6E8EFB"
@@ -80,14 +82,15 @@
                               MouseLeftButtonDown="ToggleForm_Click"/>
                 </StackPanel>
                 <StackPanel x:Name="RegisterForm" Visibility="Collapsed">
-                    <TextBox x:Name="RegisterName" 
-                            Text="Ім'я" 
+                    <TextBox x:Name="RegName" 
+                            Text="{Binding RegisterName}" 
                             GotFocus="TextBox_GotFocus"/>
-                    <TextBox x:Name="RegisterEmail" 
-                            Text="Email" 
+                    <TextBox x:Name="RegEmail" 
+                            Text="{Binding RegisterEmail}" 
                             GotFocus="TextBox_GotFocus"/>
-                    <PasswordBox x:Name="RegisterPassword" 
-                               Password="Пароль"/>
+                    <componentControl:BindablePasswordBox 
+                               Password="{Binding RegisterPassword,
+                               UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                     <Button Content="Зареєструватись" Click="RegisterButton_Click"/>
                     <TextBlock Text="Вже маєте акаунт? Увійдіть"
                               Foreground="#FF6E8EFB"

@@ -6,7 +6,7 @@ namespace WpfApp1.ViewModel;
 
 public class MainViewModel : Core.ViewModel
 {
-    private string _loginEmail;
+    private string _loginEmail = "Email";
     public string LoginEmail
     {
         get => _loginEmail;
@@ -23,6 +23,38 @@ public class MainViewModel : Core.ViewModel
         set
         {
             _loginPassword = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private string _registerName = "Name";
+
+    public string RegisterName
+    {
+        get => _registerName;
+        set
+        {
+            _registerName = value;
+            OnPropertyChanged();
+        }
+    }
+    private string _registerEmail = "Email";
+    public string RegisterEmail
+    {
+        get => _registerEmail;
+        set
+        {
+            _registerEmail = value;
+            OnPropertyChanged();
+        }
+    }
+    private string _registerPassword;
+    public string RegisterPassword
+    {
+        get => _registerPassword;
+        set
+        {
+            _registerPassword = value;
             OnPropertyChanged();
         }
     }
