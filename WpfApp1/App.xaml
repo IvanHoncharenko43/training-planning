@@ -5,16 +5,10 @@
              xmlns:viewModel="clr-namespace:WpfApp1.ViewModel"
              xmlns:view="clr-namespace:WpfApp1.View">
     <Application.Resources>
-        <DataTemplate DataType="{x:Type viewModel:LoginViewModel}">
-            <view:LoginView/>
-        </DataTemplate>
         <DataTemplate DataType="{x:Type viewModel:HomeViewModel}">
             <view:HomeView/>
         </DataTemplate>
         
-        <DataTemplate DataType="{x:Type viewModel:RegisterViewModel}">
-            <view:RegisterView/>
-        </DataTemplate>
         
     </Application.Resources>
 </Application>

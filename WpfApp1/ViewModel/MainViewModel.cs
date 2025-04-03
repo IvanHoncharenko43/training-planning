@@ -43,7 +43,7 @@ public class MainViewModel : Core.ViewModel
     public MainViewModel(INavigationService navigationService)
     {
         NavigationService = navigationService;
-        NavigateToLogin = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); }, o => true);
+        //NavigateToLogin = new RelayCommand(o => { NavigationService.NavigateTo<LoginViewModel>(); }, o => true);
         LoginCommand = new RelayCommand(o => Login(), o => CheckLogin());
         RegisterCommand = new RelayCommand(o => Register(), o => true);
     }

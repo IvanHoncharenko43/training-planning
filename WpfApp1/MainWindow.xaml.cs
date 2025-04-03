@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using LoginApp;
 
-namespace LoginApp
+namespace WpfApp1
 {
     public partial class MainWindow : Window
     {
