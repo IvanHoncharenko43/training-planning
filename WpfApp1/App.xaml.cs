@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using LoginApp;
 using Microsoft.Extensions.DependencyInjection;
+using WpfApp1.Data;
 using WpfApp1.Services;
 using WpfApp1.View;
 using WpfApp1.ViewModel;
@@ -30,9 +31,9 @@ public partial class App : Application
         
         services.AddSingleton<INavigationService, NavigationService>();
         
-
         services.AddSingleton<Func<Type, Core.ViewModel>>(provider =>
             viewModelType => (Core.ViewModel)provider.GetRequiredService(viewModelType));
+        services.AddDbContext<AppDbContext>();
         
         _serviceProvider = services.BuildServiceProvider();
     }

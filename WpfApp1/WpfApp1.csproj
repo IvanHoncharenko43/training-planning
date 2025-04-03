@@ -16,10 +16,7 @@
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.2.25163.2" />
       <PackageReference Include="MySql.Data" Version="9.2.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Model\" />
+      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.3.efcore.9.0.0" />
     </ItemGroup>
 
 </Project>
