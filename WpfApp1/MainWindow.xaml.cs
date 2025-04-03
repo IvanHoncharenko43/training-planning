@@ -38,12 +38,22 @@ namespace LoginApp
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            // логіку входу судазес
+            // логіка входу судазес
+            ShowMenu();
         }
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             // логіка реєстрації судазес
+            ShowMenu();
+        }
+
+        private void
+ ShowMenu()
+        {
+            MenuWindow menu = new MenuWindow();
+            menu.Show();
+            this.Close(); // Закриваємо вікно входу/реєстрації
         }
     }
 }
