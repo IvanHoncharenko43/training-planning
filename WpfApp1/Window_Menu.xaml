@@ -1,0 +1,55 @@
+﻿<Window x:Class="LoginApp.MenuWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Меню" 
+        Height="400" 
+        Width="300"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#FF6E8EFB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF5A7DE9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#80000000">
+
+        <Border Background="White" 
+                Margin="20" 
+                CornerRadius="10" 
+                Padding="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel>
+                <TextBlock Text="Меню" 
+                          FontSize="20" 
+                          HorizontalAlignment="Center" 
+                          Margin="0,0,0,15"/>
+
+                <Button Content="Почати"/>
+                <Button Content="Налаштування"/>
+                <Button Content="Вийти"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -5,8 +5,7 @@
         Height="400" 
         Width="350"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}" WindowStyle="ThreeDBorderWindow">
-
+        Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}">
     <Window.Resources>
         <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#FF6E8EFB" Offset="0"/>
@@ -35,7 +34,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style TargetType="TextBox">
             <Setter Property="Padding" Value="8"/>
             <Setter Property="Margin" Value="0,10,0,0"/>
