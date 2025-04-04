@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 using System.Windows.Data;
-using LoginApp;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WpfApp1.Data;
 using WpfApp1.Services;
@@ -27,14 +27,15 @@ public partial class App : Application
         });
         
         services.AddSingleton<MainViewModel>();
-        services.AddSingleton<SettingsViewModel>();
+        services.AddSingleton<LoginViewModel>();
+        services.AddSingleton<MenuViewModel>();
         
         services.AddSingleton<INavigationService, NavigationService>();
         
         services.AddSingleton<Func<Type, Core.ViewModel>>(provider =>
             viewModelType => (Core.ViewModel)provider.GetRequiredService(viewModelType));
+
         services.AddDbContext<AppDbContext>();
-        
         _serviceProvider = services.BuildServiceProvider();
     }
 

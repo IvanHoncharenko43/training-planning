@@ -12,7 +12,7 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseMySql("server=localhost;userid=root;port=3306;database=myDb",
+            optionsBuilder.UseMySql("server=localhost;user=root;database=myDb;password=myserver1234",
                 new MySqlServerVersion(new Version(8, 0, 41)));
         }
     }

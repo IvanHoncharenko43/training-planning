@@ -5,101 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:componentControl="clr-namespace:WpfApp1.ComponentControl"
-        Title="Вхід / Реєстрація" 
+        Title="Training Planning" 
         Height="400" 
         Width="350"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}">
-    <Window.Resources>
-        <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#FF6E8EFB" Offset="0"/>
-            <GradientStop Color="#FFA777E3" Offset="1"/>
-        </LinearGradientBrush>
-
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#FF6E8EFB"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="Margin" Value="0,10,0,0"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FF5A7DE9"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="TextBox">
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="Margin" Value="0,10,0,0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
-        </Style>
-
-        <Style TargetType="PasswordBox">
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="Margin" Value="0,10,0,0"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
-        </Style>
-    </Window.Resources>
-
-    <Grid Background="{StaticResource BackgroundGradient}">
-        <Border Background="White" 
-                Margin="20" 
-                CornerRadius="10" 
-                Padding="20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-            <StackPanel>
-                <TextBlock x:Name="FormTitle" 
-                          Text="Вхід" 
-                          FontSize="20" 
-                          HorizontalAlignment="Center" 
-                          Margin="0,0,0,20"/>
-                <StackPanel x:Name="LoginForm">
-                    <TextBox x:Name="LogEmail" 
-                            Text="{Binding LoginEmail}" 
-                            GotFocus="TextBox_GotFocus"/>
-                    <componentControl:BindablePasswordBox
-                                 Password="{Binding LoginPassword,
-                                 UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    <Button Content="Увійти" Click="LoginButton_Click"/>
-                    <TextBlock Text="Немає акаунту? Зареєструйтесь" 
-                              Foreground="#FF6E8EFB"
-                              Cursor="Hand"
-                              HorizontalAlignment="Center"
-                              Margin="0,10,0,0"
-                              MouseLeftButtonDown="ToggleForm_Click"/>
-                </StackPanel>
-                <StackPanel x:Name="RegisterForm" Visibility="Collapsed">
-                    <TextBox x:Name="RegName" 
-                            Text="{Binding RegisterName}" 
-                            GotFocus="TextBox_GotFocus"/>
-                    <TextBox x:Name="RegEmail" 
-                            Text="{Binding RegisterEmail}" 
-                            GotFocus="TextBox_GotFocus"/>
-                    <componentControl:BindablePasswordBox 
-                               Password="{Binding RegisterPassword,
-                               UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-                    <Button Content="Зареєструватись" Click="RegisterButton_Click"/>
-                    <TextBlock Text="Вже маєте акаунт? Увійдіть"
-                              Foreground="#FF6E8EFB"
-                              Cursor="Hand"
-                              HorizontalAlignment="Center"
-                              Margin="0,10,0,0"
-                              MouseLeftButtonDown="ToggleForm_Click"/>
-                </StackPanel>
-            </StackPanel>
-        </Border>
+        >
+    <Grid>
+        <ContentControl Content="{Binding NavigationService.CurrentView}"></ContentControl>
     </Grid>
 </Window>

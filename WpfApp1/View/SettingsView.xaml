@@ -6,7 +6,5 @@
              xmlns:local="clr-namespace:WpfApp1.View"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
-    </Grid>
+    
 </UserControl>

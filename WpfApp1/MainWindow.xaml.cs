@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using LoginApp;
 
 namespace WpfApp1
 {
@@ -10,51 +9,6 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void ToggleForm_Click(object sender, MouseButtonEventArgs e)
-        {
-            if (LoginForm.Visibility == Visibility.Visible)
-            {
-                LoginForm.Visibility = Visibility.Collapsed;
-                RegisterForm.Visibility = Visibility.Visible;
-                FormTitle.Text = "Реєстрація";
-            }
-            else
-            {
-                LoginForm.Visibility = Visibility.Visible;
-                RegisterForm.Visibility = Visibility.Collapsed;
-                FormTitle.Text = "Вхід";
-            }
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            if (textBox != null && (textBox.Text == "Email" || textBox.Text == "Ім'я"))
-            {
-                textBox.Text = "";
-            }
-        }
-
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
-        {
-            // логіка входу судазес
-            ShowMenu();
-        }
-
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
-        {
-            // логіка реєстрації судазес
-            ShowMenu();
-        }
-
-        private void
- ShowMenu()
-        {
-            MenuWindow menu = new MenuWindow();
-            menu.Show();
-            this.Close(); // Закриваємо вікно входу/реєстрації
         }
     }
 }
