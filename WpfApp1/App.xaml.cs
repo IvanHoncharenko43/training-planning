@@ -25,13 +25,14 @@ public partial class App : Application
         {
             DataContext = provider.GetRequiredService<MainViewModel>()
         });
-        
+
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<LoginViewModel>();
         services.AddSingleton<MenuViewModel>();
-        
+        services.AddSingleton<SettingsViewModel>();
+
         services.AddSingleton<INavigationService, NavigationService>();
-        
+
         services.AddSingleton<Func<Type, Core.ViewModel>>(provider =>
             viewModelType => (Core.ViewModel)provider.GetRequiredService(viewModelType));
 
@@ -45,4 +46,4 @@ public partial class App : Application
         mainWindow.Show();
         base.OnStartup(e);
     }
-    }
+}

@@ -6,5 +6,10 @@
              xmlns:local="clr-namespace:WpfApp1.View"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    
+    <Grid>
+        <TextBlock Text="&#x041D;&#x0430;&#x043B;&#x0430;&#x0448;&#x0442;&#x0443;&#x0432;&#x0430;&#x043D;&#x043D;&#x044F;"
+                   FontSize="20"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+    </Grid>
 </UserControl>
