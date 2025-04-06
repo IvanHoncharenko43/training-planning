@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:WpfApp1.View"
-             xmlns:componentControl="clr-namespace:WpfApp1.ComponentControl"
+             xmlns:core="clr-namespace:WpfApp1.Core"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Background="{StaticResource {x:Static SystemColors.WindowBrushKey}}">
     <UserControl.Resources>
+        <core:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
         <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#FF6E8EFB" Offset="0"/>
             <GradientStop Color="#FFA777E3" Offset="1"/>
@@ -64,13 +65,17 @@
                           FontSize="20" 
                           HorizontalAlignment="Center" 
                           Margin="0,0,0,20"/>
+                <TextBlock Text="{Binding ErrorMessage}" 
+                           Foreground="Red" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,0,0,10" 
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
                 <StackPanel x:Name="LoginForm">
                     <TextBox x:Name="LogEmail" 
                             Text="{Binding LoginEmail}" 
                             GotFocus="TextBox_GotFocus"/>
-                    <componentControl:BindablePasswordBox
-                                 Password="{Binding LoginPassword,
-                                 UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    <PasswordBox x:Name="LoginPasswordBox"
+                                 PasswordChanged="LoginPasswordBox_PasswordChanged"/>
                     <Button Content="Увійти" Command="{Binding LoginCommand}"/>
                     <TextBlock Text="Немає акаунту? Зареєструйтесь" 
                               Foreground="#FF6E8EFB"
@@ -80,15 +85,14 @@
                               MouseLeftButtonDown="ToggleForm_Click"/>
                 </StackPanel>
                 <StackPanel x:Name="RegisterForm" Visibility="Collapsed">
-                    <TextBox x:Name="RegName" 
-                            Text="{Binding RegisterName}" 
+                    <TextBox x:Name="RegLogin" 
+                            Text="{Binding RegisterLogin}" 
                             GotFocus="TextBox_GotFocus"/>
                     <TextBox x:Name="RegEmail" 
                             Text="{Binding RegisterEmail}" 
                             GotFocus="TextBox_GotFocus"/>
-                    <componentControl:BindablePasswordBox 
-                               Password="{Binding RegisterPassword,
-                               UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                    <PasswordBox x:Name="RegisterPasswordBox"
+                                 PasswordChanged="RegisterPasswordBox_PasswordChanged"/>
                     <Button Content="Зареєструватись" Command="{Binding RegisterCommand}"/>
                     <TextBlock Text="Вже маєте акаунт? Увійдіть"
                               Foreground="#FF6E8EFB"

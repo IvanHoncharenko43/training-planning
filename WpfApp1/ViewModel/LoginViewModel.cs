@@ -27,14 +27,13 @@ public class LoginViewModel : Core.ViewModel
         }
     }
 
-    private string _registerName = "Ім'я";
-
-    public string RegisterName
+    private string _registerLogin = "Логін";
+    public string RegisterLogin
     {
-        get => _registerName;
+        get => _registerLogin;
         set
         {
-            _registerName = value;
+            _registerLogin = value;
             OnPropertyChanged();
         }
     }
@@ -58,11 +57,21 @@ public class LoginViewModel : Core.ViewModel
             OnPropertyChanged();
         }
     }
-    
+
+    private string _errorMessage;
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            _errorMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
     private UserRepository _userRepository;
     public RelayCommand LoginCommand { get; set; }
     public RelayCommand RegisterCommand { get; set; }
-    
     public RelayCommand NavigateToMenu { get; set; }
     private INavigationService _navigationService;
     public INavigationService NavigationService
@@ -75,48 +84,67 @@ public class LoginViewModel : Core.ViewModel
         }
     }
 
-    public LoginViewModel(INavigationService navigationService)
+    public LoginViewModel(INavigationService navigationService, UserRepository userRepository)
     {
         NavigationService = navigationService;
+        _userRepository = userRepository;
         LoginCommand = new RelayCommand(o => Login(), o => CheckLogin());
         RegisterCommand = new RelayCommand(o => Register(), o => CheckRegister());
         NavigateToMenu = new RelayCommand(o => { NavigationService.NavigateTo<MenuViewModel>(); }, o => true);
-        _userRepository = new UserRepository();
     }
+
     private void Login()
     {
-        bool isSucceed = _userRepository.CheckIfExists(LoginEmail, LoginPassword);
-        if (isSucceed)
-            NavigateToMenu.Execute(null);
-        return; //висвітлення вікна про некоретне введення даних
+        try
+        {
+            bool isSucceed = _userRepository.CheckIfExists(LoginEmail, LoginPassword);
+            if (isSucceed)
+            {
+                NavigateToMenu.Execute(null);
+                ErrorMessage = string.Empty;
+            }
+            else
+            {
+                ErrorMessage = "Невірний email або пароль";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Помилка входу: {ex.Message}";
+        }
     }
+
     private bool CheckLogin()
     {
         if (string.IsNullOrWhiteSpace(LoginEmail) || string.IsNullOrWhiteSpace(LoginPassword) || LoginEmail == "Email")
         {
             return false;
         }
-        
         return true;
     }
 
     private void Register()
     {
-        _userRepository.Register(RegisterName, RegisterEmail, RegisterPassword);
-        LoginEmail = RegisterEmail;
-        LoginPassword = RegisterPassword;
-        Login();
-        //NavigateToMenu.Execute(null);
+        try
+        {
+            _userRepository.Register(RegisterLogin, RegisterEmail, RegisterPassword);
+            LoginEmail = RegisterEmail;
+            LoginPassword = RegisterPassword;
+            Login();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Помилка реєстрації: {ex.Message}";
+        }
     }
 
     private bool CheckRegister()
     {
-        if (string.IsNullOrWhiteSpace(RegisterName) || string.IsNullOrWhiteSpace(RegisterEmail) || string.IsNullOrWhiteSpace(RegisterPassword) ||
-            RegisterName == "Name" || RegisterEmail == "Email")
+        if (string.IsNullOrWhiteSpace(RegisterLogin) || string.IsNullOrWhiteSpace(RegisterEmail) || string.IsNullOrWhiteSpace(RegisterPassword) ||
+            RegisterLogin == "Логін" || RegisterEmail == "Email")
         {
             return false;
         }
-
         return true;
     }
 }

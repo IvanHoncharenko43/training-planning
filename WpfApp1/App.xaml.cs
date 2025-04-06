@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WpfApp1.Data;
 using WpfApp1.Services;
 using WpfApp1.View;
@@ -11,9 +12,6 @@ using WpfApp1.ViewModel;
 
 namespace WpfApp1;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
     private readonly ServiceProvider _serviceProvider;
@@ -27,16 +25,24 @@ public partial class App : Application
         });
 
         services.AddSingleton<MainViewModel>();
-        services.AddSingleton<LoginViewModel>();
+        services.AddSingleton<LoginViewModel>(provider => new LoginViewModel(
+            provider.GetRequiredService<INavigationService>(),
+            provider.GetRequiredService<UserRepository>()
+        ));
         services.AddSingleton<MenuViewModel>();
-        services.AddSingleton<SettingsViewModel>();
 
         services.AddSingleton<INavigationService, NavigationService>();
 
         services.AddSingleton<Func<Type, Core.ViewModel>>(provider =>
             viewModelType => (Core.ViewModel)provider.GetRequiredService(viewModelType));
 
-        services.AddDbContext<AppDbContext>();
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlite("Data Source=app.db")
+                   .LogTo(Console.WriteLine, LogLevel.Information),
+            ServiceLifetime.Singleton);
+
+        services.AddSingleton<UserRepository>();
+
         _serviceProvider = services.BuildServiceProvider();
     }
 
