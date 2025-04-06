@@ -35,7 +35,6 @@ public partial class App : Application
 
         services.AddSingleton<Func<Type, Core.ViewModel>>(provider =>
             viewModelType => (Core.ViewModel)provider.GetRequiredService(viewModelType));
-
         services.AddDbContext<AppDbContext>();
         _serviceProvider = services.BuildServiceProvider();
     }
