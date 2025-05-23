@@ -8,11 +8,7 @@ public class UserRepository
 
     public UserRepository(AppDbContext context)
     {
-        _context = context;
-    }
-
-    public UserRepository()
-    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public void Register(string name, string email, string password)
@@ -20,10 +16,12 @@ public class UserRepository
         var user1 = _context.Users.FirstOrDefault(u => u.Email == email);
         if (user1 == null)
         {
-            var user = new UserModel();
-            user.Name = name;
-            user.Email = email;
-            user.Password = password;
+            var user = new UserModel
+            {
+                Name = name,
+                Email = email,
+                Password = password
+            };
             _context.Users.Add(user);
             _context.SaveChanges();
         }
@@ -37,5 +35,10 @@ public class UserRepository
             return false;
         }
         return user.Password == password;
+    }
+
+    public UserModel GetUserByEmail(string email)
+    {
+        return _context.Users.FirstOrDefault(u => u.Email == email);
     }
 }

@@ -3,29 +3,15 @@ using WpfApp1.Services;
 
 namespace WpfApp1.ViewModel;
 
-public class MenuViewModel : Core.ViewModel
+public class MenuViewModel : WpfApp1.Core.ViewModel
 {
-    private INavigationService _navigationService;
-    public INavigationService NavigationService
-    {
-        get => _navigationService;
-        set
-        {
-            _navigationService = value;
-            OnPropertyChanged();
-        }
-    }
+    private readonly INavigationService _navigationService;
 
-    public RelayCommand NavigateToSettingsCommand { get; set; }
+    public RelayCommand NavigateToHomeCommand { get; set; }
 
     public MenuViewModel(INavigationService navigationService)
     {
-        NavigationService = navigationService;
-        NavigateToSettingsCommand = new RelayCommand(o => NavigateToSettings(), o => true);
+        _navigationService = navigationService;
+        NavigateToHomeCommand = new RelayCommand(o => { _navigationService.NavigateTo<HomeViewModel>(); }, o => true);
     }
-
-    private void NavigateToSettings()
-    {
-        NavigationService.NavigateTo<SettingsViewModel>();
-    }
-}   
+}

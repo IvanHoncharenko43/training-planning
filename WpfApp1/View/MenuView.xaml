@@ -44,8 +44,8 @@
                            FontSize="20" 
                            HorizontalAlignment="Center" 
                            Margin="0,0,0,15"/>
-                <Button Content="Почати"/>
-                <Button Content="Налаштування" Command="{Binding NavigateToSettingsCommand}"/>
+                <Button Content="Почати" Command="{Binding NavigateToHomeCommand}"/>
+                <Button Content="Налаштування"/>
                 <Button Content="Вийти"/>
             </StackPanel>
         </Border>

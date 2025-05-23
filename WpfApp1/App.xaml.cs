@@ -29,7 +29,13 @@ public partial class App : Application
             provider.GetRequiredService<INavigationService>(),
             provider.GetRequiredService<UserRepository>()
         ));
-        services.AddSingleton<MenuViewModel>();
+        services.AddSingleton<MenuViewModel>(provider => new MenuViewModel(
+            provider.GetRequiredService<INavigationService>()
+        ));
+        services.AddSingleton<HomeViewModel>(provider => new HomeViewModel(
+            provider.GetRequiredService<AppDbContext>(),
+            provider.GetRequiredService<INavigationService>()
+        ));
 
         services.AddSingleton<INavigationService, NavigationService>();
 

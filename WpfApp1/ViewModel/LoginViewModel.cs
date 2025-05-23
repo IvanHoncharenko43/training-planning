@@ -27,13 +27,13 @@ public class LoginViewModel : Core.ViewModel
         }
     }
 
-    private string _registerLogin = "Логін";
-    public string RegisterLogin
+    private string _registerName = "Ім'я";
+    public string RegisterName
     {
-        get => _registerLogin;
+        get => _registerName;
         set
         {
-            _registerLogin = value;
+            _registerName = value;
             OnPropertyChanged();
         }
     }
@@ -58,59 +58,35 @@ public class LoginViewModel : Core.ViewModel
         }
     }
 
-    private string _errorMessage;
-    public string ErrorMessage
-    {
-        get => _errorMessage;
-        set
-        {
-            _errorMessage = value;
-            OnPropertyChanged();
-        }
-    }
+    private readonly UserRepository _userRepository;
+    private readonly INavigationService _navigationService; // readonly
 
-    private UserRepository _userRepository;
+    public INavigationService NavigationService => _navigationService; // get-only
+
     public RelayCommand LoginCommand { get; set; }
     public RelayCommand RegisterCommand { get; set; }
     public RelayCommand NavigateToMenu { get; set; }
-    private INavigationService _navigationService;
-    public INavigationService NavigationService
-    {
-        get => _navigationService;
-        set
-        {
-            _navigationService = value;
-            OnPropertyChanged();
-        }
-    }
 
     public LoginViewModel(INavigationService navigationService, UserRepository userRepository)
     {
-        NavigationService = navigationService;
+        _navigationService = navigationService;
         _userRepository = userRepository;
         LoginCommand = new RelayCommand(o => Login(), o => CheckLogin());
         RegisterCommand = new RelayCommand(o => Register(), o => CheckRegister());
-        NavigateToMenu = new RelayCommand(o => { NavigationService.NavigateTo<MenuViewModel>(); }, o => true);
+        NavigateToMenu = new RelayCommand(o => { _navigationService.NavigateTo<MenuViewModel>(); }, o => true);
     }
 
     private void Login()
     {
-        try
+        bool isSucceed = _userRepository.CheckIfExists(LoginEmail, LoginPassword);
+        if (isSucceed)
         {
-            bool isSucceed = _userRepository.CheckIfExists(LoginEmail, LoginPassword);
-            if (isSucceed)
+            var user = _userRepository.GetUserByEmail(LoginEmail);
+            if (user != null)
             {
+                _navigationService.CurrentUserId = user.Id;
                 NavigateToMenu.Execute(null);
-                ErrorMessage = string.Empty;
             }
-            else
-            {
-                ErrorMessage = "Невірний email або пароль";
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"Помилка входу: {ex.Message}";
         }
     }
 
@@ -125,23 +101,16 @@ public class LoginViewModel : Core.ViewModel
 
     private void Register()
     {
-        try
-        {
-            _userRepository.Register(RegisterLogin, RegisterEmail, RegisterPassword);
-            LoginEmail = RegisterEmail;
-            LoginPassword = RegisterPassword;
-            Login();
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"Помилка реєстрації: {ex.Message}";
-        }
+        _userRepository.Register(RegisterName, RegisterEmail, RegisterPassword);
+        LoginEmail = RegisterEmail;
+        LoginPassword = RegisterPassword;
+        Login();
     }
 
     private bool CheckRegister()
     {
-        if (string.IsNullOrWhiteSpace(RegisterLogin) || string.IsNullOrWhiteSpace(RegisterEmail) || string.IsNullOrWhiteSpace(RegisterPassword) ||
-            RegisterLogin == "Логін" || RegisterEmail == "Email")
+        if (string.IsNullOrWhiteSpace(RegisterName) || string.IsNullOrWhiteSpace(RegisterEmail) || string.IsNullOrWhiteSpace(RegisterPassword) ||
+            RegisterName == "Ім'я" || RegisterEmail == "Email")
         {
             return false;
         }
