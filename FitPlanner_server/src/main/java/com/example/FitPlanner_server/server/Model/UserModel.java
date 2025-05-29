@@ -13,6 +13,22 @@ public class UserModel {
     private String username;
     private String password;
 
+    public UserModel() {}
+
+    public UserModel(String name, String username, String password)
+    {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
+    public UserModel(int id, String name, String username, String password)
+    {
+        this.id = id;
+        this.name = name;
+        this.username = username;
+        this.password = password;
+    }
+
     public int getId()
     {
         return id;

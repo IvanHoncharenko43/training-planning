@@ -1,8 +1,9 @@
-package com.example.FitPlanner_server.server.Controller;
+package com.example.FitPlanner_server.server.controller;
 
 import com.example.FitPlanner_server.server.DTO.LoginDTO;
 import com.example.FitPlanner_server.server.DTO.RegisterDTO;
 import com.example.FitPlanner_server.server.Model.UserModel;
+import com.example.FitPlanner_server.server.Model.UserRepo;
 import com.example.FitPlanner_server.server.Model.UserRepository;
 import com.example.FitPlanner_server.server.component.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +28,28 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private UserRepo userRepo;
+
     private UserRepository userRepository;
 
-    public AuthController(JwtUtil jwtUtil, UserRepository userRepository) {
+    public AuthController(JwtUtil jwtUtil, UserRepository userRepository, UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.userRepo = userRepo;
     }
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody RegisterDTO registerUser)
     {
-        UserModel userModel = userRepository.findByUsername(registerUser.getUsername());
-        if(userModel == null)
+        //UserModel userModel = userRepository.findByUsername(registerUser.getUsername());
+        UserModel user = userRepo.findByUsername(registerUser.getUsername());
+        if(user == null)
         {
             UserModel newUser = new UserModel();
             newUser.setName(registerUser.getName());
             newUser.setUsername(registerUser.getUsername());
             newUser.setPassword(passwordEncoder.encode(registerUser.getPassword()));
-            userRepository.save(newUser);
+            userRepo.save(newUser);
             return ResponseEntity.ok("User registered successfully");
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
@@ -54,11 +59,23 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginDTO loginUser)
     {
         //UserModel userModel = userRepository.findByUsername(loginUser.getUsername());
-        Authentication auth = authenticationManager.authenticate
-                (
-                        new UsernamePasswordAuthenticationToken(loginUser.getUsername(), loginUser.getPassword())
-                );
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        UserDetails userDetails = null;
+        try
+        {
+            Authentication auth = authenticationManager.authenticate
+                    (
+                            new UsernamePasswordAuthenticationToken
+                                    (
+                                            loginUser.getUsername(), loginUser.getPassword()
+                                    )
+                    );
+            userDetails = (UserDetails) auth.getPrincipal();
+
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Помилка входу");
+        }
         String token = jwtUtil.generateToken(userDetails.getUsername());
         /*if(userModel == null)
         {
