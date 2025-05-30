@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json;
 using Calendar.Model;
+using Calendar.Requests;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -17,12 +20,13 @@ namespace Calendar
     {
         private List<TrainingNote> trainingNotes;
         private readonly string NotesFile;
+        private TrainingRequests _trainingRequests;
 
         public MainWindow()
         {
             string appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Calendar");
             NotesFile = Path.Combine(appDataPath, "training_notes.json");
-
+            _trainingRequests = new();
             InitializeComponent();
             LoadNotes();
             BuildWeightPlot();
@@ -68,7 +72,7 @@ namespace Calendar
         {
             // Фільтруємо нотатки для поточного користувача та з наявною вагою
             var userNotes = trainingNotes
-                .Where(n => n.UserId == LoginWindow.CurrentUser?.Id && n.Weight.HasValue)
+                .Where(n => n.UserId.Id == LoginWindow.CurrentUser?.Id && n.Weight.HasValue)
                 .OrderBy(n => n.Date) // Сортуємо за датою (від найдавніших до найновіших)
                 .ToList();
 
@@ -150,7 +154,7 @@ namespace Calendar
             WeightPlot.Model = plotModel;
         }
 
-        private void WorkoutCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+        private async void WorkoutCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             if (WorkoutCalendar.SelectedDate.HasValue)
             {
@@ -159,7 +163,10 @@ namespace Calendar
 
                 SelectedDateTextBlock.Text = $"Обрана дата: {selectedDate.ToString("dd.MM.yyyy")}";
 
-                var note = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
+                // var note = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
+
+                var note = await _trainingRequests.GetNote(selectedDate);
+                Console.WriteLine(note.Description);
                 if (note != null)
                 {
                     WorkoutCheckBox.IsChecked = note.WasTraining;
@@ -200,37 +207,46 @@ namespace Calendar
             NotesTextBox.Visibility = Visibility.Collapsed;
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (WorkoutCalendar.SelectedDate.HasValue)
             {
                 DateTime selectedDate = WorkoutCalendar.SelectedDate.Value;
                 double? weight = double.TryParse(WeightTextBox.Text, out double w) ? w : (double?)null;
 
-                var existingNote = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
-                if (existingNote != null)
-                {
-                    existingNote.WasTraining = WorkoutCheckBox.IsChecked ?? false;
-                    existingNote.Weight = weight;
-                    existingNote.Description = NotesTextBox.Text;
-                }
-                else
-                {
-                    var newNote = new TrainingNote
+                // var existingNote = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
+                //
+                // if (existingNote != null)
+                // {
+                //     existingNote.WasTraining = WorkoutCheckBox.IsChecked ?? false;
+                //     existingNote.Weight = weight;
+                //     existingNote.Description = NotesTextBox.Text;
+                // }
+                // else
+                // {
+                    var newNote = new TrainingNote()
                     {
-                        Id = trainingNotes.Count + 1,
-                        UserId = LoginWindow.CurrentUser.Id,
+                        // Id = trainingNotes.Count + 1,
+                        // UserId = LoginWindow.CurrentUser.Id,
                         Date = selectedDate,
                         WasTraining = WorkoutCheckBox.IsChecked ?? false,
                         Weight = weight,
                         Description = NotesTextBox.Text
                     };
-                    trainingNotes.Add(newNote);
-                }
+                //     trainingNotes.Add(newNote);
+                // }
 
-                SaveNotes();
-                MessageBox.Show("Дані збережено!");
-                BuildWeightPlot(); // Оновлюємо графік після збереження
+                bool success = await _trainingRequests.SaveNote(newNote);
+                // SaveNotes();
+                if (success)
+                {
+                    MessageBox.Show("Дані збережено!");
+                    BuildWeightPlot(); // Оновлюємо графік після збереження
+                }
+                else
+                {
+                    MessageBox.Show("Помилка. Cпробуйте пізніше");
+                }
             }
         }
 

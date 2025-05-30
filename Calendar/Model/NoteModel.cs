@@ -1,17 +1,16 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Calendar.Model;
 
-public class TrainingNote
+public class NoteModel
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
     
     [JsonPropertyName("userId")]
     public UserModel UserId { get; set; } 
-    
     [JsonPropertyName("date")]
-    public DateTime Date { get; set; }
+    public string Date { get; set; }
     
     [JsonPropertyName("hasTrained")]
     public bool WasTraining { get; set; }
@@ -21,4 +20,9 @@ public class TrainingNote
     
     [JsonPropertyName("notes")]
     public string Description { get; set; }
+
+    public NoteModel(string date)
+    {
+        Date = date;
+    }
 }
