@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json;
 using Calendar.Model;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using OxyPlot.Wpf;
 
 namespace Calendar
 {
@@ -20,6 +25,7 @@ namespace Calendar
 
             InitializeComponent();
             LoadNotes();
+            BuildWeightPlot();
         }
 
         private void LoadNotes()
@@ -58,6 +64,92 @@ namespace Calendar
             }
         }
 
+        private void BuildWeightPlot()
+        {
+            // Фільтруємо нотатки для поточного користувача та з наявною вагою
+            var userNotes = trainingNotes
+                .Where(n => n.UserId == LoginWindow.CurrentUser?.Id && n.Weight.HasValue)
+                .OrderBy(n => n.Date) // Сортуємо за датою (від найдавніших до найновіших)
+                .ToList();
+
+            // Створюємо модель графіка
+            var plotModel = new PlotModel { Title = "Графік ваги" };
+
+            // Налаштування осі X (дати)
+            var dateAxis = new CategoryAxis
+            {
+                Position = AxisPosition.Bottom,
+                Title = "Дата",
+                Angle = 45 // Похилимо мітки, щоб дати не перекривалися
+            };
+
+            // Додаємо дати до осі X
+            foreach (var note in userNotes)
+            {
+                dateAxis.Labels.Add(note.Date.ToString("dd.MM.yyyy"));
+            }
+            plotModel.Axes.Add(dateAxis);
+
+            // Налаштування осі Y (вага, кг)
+            var weightAxis = new LinearAxis
+            {
+                Position = AxisPosition.Left,
+                Title = "Вага (кг)",
+                MajorGridlineStyle = LineStyle.Solid,
+                MinorGridlineStyle = LineStyle.Dot
+            };
+            plotModel.Axes.Add(weightAxis);
+
+            // Додаємо лінію, що з’єднує всі точки
+            var lineSeries = new LineSeries
+            {
+                Color = OxyColors.Gray, // Лінія сірого кольору для всіх точок
+                LineStyle = LineStyle.Solid
+            };
+
+            // Додаємо точки з різними кольорами
+            var trainingSeries = new ScatterSeries
+            {
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 5,
+                MarkerFill = OxyColors.Red // Червоний для тренувань
+            };
+
+            var noTrainingSeries = new ScatterSeries
+            {
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 5,
+                MarkerFill = OxyColors.Blue // Синій для відсутності тренувань
+            };
+
+            // Додаємо точки до відповідних серій
+            for (int i = 0; i < userNotes.Count; i++)
+            {
+                var note = userNotes[i];
+                double x = i; // Індекс дати
+                double y = note.Weight.Value;
+
+                lineSeries.Points.Add(new DataPoint(x, y)); // Додаємо до лінії
+
+                if (note.WasTraining)
+                {
+                    trainingSeries.Points.Add(new ScatterPoint(x, y));
+                }
+                else
+                {
+                    noTrainingSeries.Points.Add(new ScatterPoint(x, y));
+                }
+            }
+
+            // Додаємо серії до графіка
+            plotModel.Series.Add(lineSeries);
+            plotModel.Series.Add(trainingSeries);
+            plotModel.Series.Add(noTrainingSeries);
+
+            // Призначаємо модель графіку
+            WeightPlot.Model = plotModel;
+        }
+
         private void WorkoutCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             if (WorkoutCalendar.SelectedDate.HasValue)
@@ -65,20 +157,47 @@ namespace Calendar
                 DetailsPanel.Visibility = Visibility.Visible;
                 DateTime selectedDate = WorkoutCalendar.SelectedDate.Value;
 
+                SelectedDateTextBlock.Text = $"Обрана дата: {selectedDate.ToString("dd.MM.yyyy")}";
+
                 var note = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
                 if (note != null)
                 {
                     WorkoutCheckBox.IsChecked = note.WasTraining;
                     WeightTextBox.Text = note.Weight?.ToString() ?? string.Empty;
                     NotesTextBox.Text = note.Description;
+
+                    if (note.WasTraining)
+                    {
+                        NotesLabel.Visibility = Visibility.Visible;
+                        NotesTextBox.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        NotesLabel.Visibility = Visibility.Collapsed;
+                        NotesTextBox.Visibility = Visibility.Collapsed;
+                    }
                 }
                 else
                 {
                     WorkoutCheckBox.IsChecked = false;
                     WeightTextBox.Text = string.Empty;
                     NotesTextBox.Text = string.Empty;
+                    NotesLabel.Visibility = Visibility.Collapsed;
+                    NotesTextBox.Visibility = Visibility.Collapsed;
                 }
             }
+        }
+
+        private void WorkoutCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            NotesLabel.Visibility = Visibility.Visible;
+            NotesTextBox.Visibility = Visibility.Visible;
+        }
+
+        private void WorkoutCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            NotesLabel.Visibility = Visibility.Collapsed;
+            NotesTextBox.Visibility = Visibility.Collapsed;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -111,6 +230,7 @@ namespace Calendar
 
                 SaveNotes();
                 MessageBox.Show("Дані збережено!");
+                BuildWeightPlot(); // Оновлюємо графік після збереження
             }
         }
 
