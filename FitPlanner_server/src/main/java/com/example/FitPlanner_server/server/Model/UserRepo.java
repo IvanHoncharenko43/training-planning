@@ -56,7 +56,7 @@ public class UserRepo {
             connection.close();
         } catch (SQLException e)
         {
-            System.out.println("SQLException UserRepo1: " + e.getMessage());
+            System.out.println("SQLException UserRepo2: " + e.getMessage());
         }
         return null;
     }

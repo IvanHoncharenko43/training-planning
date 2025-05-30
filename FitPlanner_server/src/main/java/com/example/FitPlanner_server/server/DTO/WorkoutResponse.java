@@ -1,18 +1,13 @@
-package com.example.FitPlanner_server.server.Model;
+package com.example.FitPlanner_server.server.DTO;
 
+import com.example.FitPlanner_server.server.Model.UserModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.sql.Date;
+import java.time.LocalDate;
 
-@Entity
-@Table(name = "workouts")
-public class WorkoutModel {
+public class WorkoutResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     private int weight;
     private String notes;
     private boolean hasTrained;
@@ -20,19 +15,8 @@ public class WorkoutModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserModel userId;
-
-    public WorkoutModel() {}
-
-    public WorkoutModel(int weight, String notes, boolean hasTrained)
-    {
-        this.weight = weight;
-        this.notes = notes;
-        this.hasTrained = hasTrained;
-    }
-    public WorkoutModel(int weight, String notes, boolean hasTrained, Date date)
+    public WorkoutResponse() {}
+    public WorkoutResponse(int weight, String notes, boolean hasTrained, Date date)
     {
         this.weight = weight;
         this.notes = notes;
@@ -40,14 +24,6 @@ public class WorkoutModel {
         this.date = date.toLocalDate();
     }
 
-    public int getId()
-    {
-        return id;
-    }
-    public void setId(int id)
-    {
-        this.id = id;
-    }
     public int getWeight()
     {
         return weight;
@@ -71,14 +47,6 @@ public class WorkoutModel {
     public void setHasTrained(boolean hasTrained)
     {
         this.hasTrained = hasTrained;
-    }
-    public UserModel getUserId()
-    {
-        return userId;
-    }
-    public void setUserId(UserModel userId)
-    {
-        this.userId = userId;
     }
     public Date getDate()
     {

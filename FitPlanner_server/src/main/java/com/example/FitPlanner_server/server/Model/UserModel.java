@@ -2,6 +2,9 @@ package com.example.FitPlanner_server.server.Model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class UserModel {
@@ -14,7 +17,6 @@ public class UserModel {
     private String password;
 
     public UserModel() {}
-
     public UserModel(String name, String username, String password)
     {
         this.name = name;
