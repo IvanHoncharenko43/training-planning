@@ -40,11 +40,6 @@ public class TrainingRequests
     
     public async Task<TrainingNote> GetNote(DateTime date)
     {
-        var note = new TrainingNote()
-        {
-            Date = date,
-            // UserId = LoginWindow.CurrentUser
-        };
         var note1 = new NoteModel(date.ToString("yyyy-MM-dd")); 
         string json = JsonSerializer.Serialize(note1);
         StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -52,8 +47,6 @@ public class TrainingRequests
         TrainingNote currentNote = new();
         try
         {
-            string currentDate = date.ToString("yyyy-MM-dd");
-            Console.WriteLine(note1.Date);
             HttpResponseMessage response = await _httpClient.PutAsync("http://localhost:8080/workout/get", content);
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -63,5 +56,20 @@ public class TrainingRequests
         }
         catch (HttpRequestException) {}
         return currentNote;
+    }
+    public async Task<List<TrainingNote>> GetAllNotes()
+    {
+        List<TrainingNote> notes = new();
+        try
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync("http://localhost:8080/workout/getAll");
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                string responseString = await response.Content.ReadAsStringAsync();
+                notes = JsonSerializer.Deserialize<List<TrainingNote>>(responseString).ToList();
+            }
+        }
+        catch (HttpRequestException) {}
+        return notes;
     }
 }

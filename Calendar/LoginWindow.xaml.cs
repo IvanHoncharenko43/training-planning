@@ -98,7 +98,7 @@ namespace Calendar
         {
             var newUser = new UserModel
             {
-                Email = username,
+                Username = username,
                 Password = password
             };
             string json = JsonSerializer.Serialize(newUser);
@@ -108,8 +108,8 @@ namespace Calendar
                 HttpResponseMessage response = await _httpClient.PostAsync("http://localhost:8080/auth/login", content);
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    CurrentUser.Email = username;
-                    // CurrentUser.Username = username;
+                    // CurrentUser.Email = username;
+                    CurrentUser.Username = username;
                     UserToken = await response.Content.ReadAsStringAsync();
                     MenuWindow menuWindow = new MenuWindow();
                     menuWindow.Show();
@@ -151,7 +151,7 @@ namespace Calendar
             var newUser = new UserModel
             {
                 Name = name,
-                Email = email,
+                Username = email,
                 Password = password
             };
             string json = JsonSerializer.Serialize(newUser);

@@ -1,5 +1,6 @@
 package com.example.FitPlanner_server.server.Model;
 
+import com.example.FitPlanner_server.server.DTO.AllWorkoutsRespond;
 import com.example.FitPlanner_server.server.DTO.WorkoutResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.*;
 
 @Repository
 public class WorkoutRepository {
@@ -18,12 +20,13 @@ public class WorkoutRepository {
     @Value("${spring.datasource.password}")
     private String dbPassword;
 
-    public WorkoutModel findByDate(Date date) {
+    public WorkoutModel findByDate(Date date, int userId) {
         try {
             Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
-            String query = "SELECT * FROM workouts WHERE date = ?";
+            String query = "SELECT * FROM workouts WHERE date = ? AND user_id = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setDate(1, date);
+            preparedStatement.setInt(2, userId);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
             WorkoutModel workoutModel = new WorkoutModel();
@@ -106,8 +109,6 @@ public class WorkoutRepository {
             boolean hasTrained = resultSet.getBoolean("has_trained");
             WorkoutResponse workout = new WorkoutResponse(weight, notes, hasTrained, date);
 
-            System.out.println(date);
-
             resultSet.close();
             preparedStatement.close();
             connection.close();
@@ -118,5 +119,32 @@ public class WorkoutRepository {
             System.out.println("getWorkoutNotesEXC: " + e.getMessage());
         }
         return null;
+    }
+
+    public List<AllWorkoutsRespond> getAllWorkouts(int userId)
+    {
+        List<AllWorkoutsRespond> workouts = new ArrayList<>();
+        try
+        {
+            Connection connection = DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+            String query = "SELECT date, weight FROM workouts WHERE user_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next())
+            {
+                int weight = resultSet.getInt("weight");
+                Date date = resultSet.getDate("date");
+                workouts.add(new AllWorkoutsRespond(weight, date));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+        }
+        catch(SQLException e)
+        {
+            System.out.println("getAllWorkoutsEXC: " + e.getMessage());
+        }
+        return workouts;
     }
 }

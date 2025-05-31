@@ -68,14 +68,20 @@ namespace Calendar
             }
         }
 
-        private void BuildWeightPlot()
+        private async Task BuildWeightPlot()
         {
             // Фільтруємо нотатки для поточного користувача та з наявною вагою
-            var userNotes = trainingNotes
-                .Where(n => n.UserId.Id == LoginWindow.CurrentUser?.Id && n.Weight.HasValue)
-                .OrderBy(n => n.Date) // Сортуємо за датою (від найдавніших до найновіших)
-                .ToList();
+            // var userNotes = trainingNotes
+            //     .Where(n => n.UserId.Id == LoginWindow.CurrentUser?.Id && n.Weight.HasValue)
+            //     .OrderBy(n => n.Date) // Сортуємо за датою (від найдавніших до найновіших)
+            //     .ToList();
 
+            var userNotes = await _trainingRequests.GetAllNotes();
+            if (userNotes.Count < 1)
+            {
+                return;
+            }
+            userNotes = userNotes.OrderBy(n => n.Date).ToList();
             // Створюємо модель графіка
             var plotModel = new PlotModel { Title = "Графік ваги" };
 
@@ -241,7 +247,7 @@ namespace Calendar
                 if (success)
                 {
                     MessageBox.Show("Дані збережено!");
-                    BuildWeightPlot(); // Оновлюємо графік після збереження
+                    await BuildWeightPlot(); // Оновлюємо графік після збереження
                 }
                 else
                 {

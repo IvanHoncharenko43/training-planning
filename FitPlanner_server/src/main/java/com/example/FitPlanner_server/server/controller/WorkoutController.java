@@ -1,5 +1,6 @@
 package com.example.FitPlanner_server.server.controller;
 
+import com.example.FitPlanner_server.server.DTO.AllWorkoutsRespond;
 import com.example.FitPlanner_server.server.DTO.GetWorkoutDTO;
 import com.example.FitPlanner_server.server.DTO.WorkoutResponse;
 import com.example.FitPlanner_server.server.Model.UserModel;
@@ -14,9 +15,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @PreAuthorize("hasRole('USER')")
@@ -34,7 +38,7 @@ public class WorkoutController {
     public void saveWorkout(@RequestBody WorkoutModel workoutModel, @AuthenticationPrincipal UserDetails userDetails)
     {
         UserModel user = userRepo.findByUsername(userDetails.getUsername());
-        WorkoutModel workout = workoutRepository.findByDate(workoutModel.getDate());
+        WorkoutModel workout = workoutRepository.findByDate(workoutModel.getDate(), user.getId());
         if(workout != null)
         {
             workoutRepository.update(workoutModel);
@@ -55,5 +59,13 @@ public class WorkoutController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Інформації про тренування не знайдено");
         }
         return ResponseEntity.status(HttpStatus.OK).body(workout);
+    }
+
+    @GetMapping("/workout/getAll")
+    public List<AllWorkoutsRespond> getAllWorkouts(@AuthenticationPrincipal UserDetails userDetails)
+    {
+        UserModel user = userRepo.findByUsername(userDetails.getUsername());
+        List<AllWorkoutsRespond> workouts = workoutRepository.getAllWorkouts(user.getId());
+        return workouts;
     }
 }

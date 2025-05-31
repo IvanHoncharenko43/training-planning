@@ -12,7 +12,7 @@ public class UserModel
     [JsonPropertyName("name")]
     public string Name { get; set; }
     [JsonPropertyName("username")]
-    public string Email { get; set; }
+    public string Username { get; set; }
     [JsonPropertyName("password")]
     public string Password { get; set; }
 }
