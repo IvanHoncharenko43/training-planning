@@ -169,10 +169,7 @@ namespace Calendar
 
                 SelectedDateTextBlock.Text = $"Обрана дата: {selectedDate.ToString("dd.MM.yyyy")}";
 
-                // var note = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
-
                 var note = await _trainingRequests.GetNote(selectedDate);
-                Console.WriteLine(note.Description);
                 if (note != null)
                 {
                     WorkoutCheckBox.IsChecked = note.WasTraining;
@@ -219,28 +216,13 @@ namespace Calendar
             {
                 DateTime selectedDate = WorkoutCalendar.SelectedDate.Value;
                 double? weight = double.TryParse(WeightTextBox.Text, out double w) ? w : (double?)null;
-
-                // var existingNote = trainingNotes.Find(n => n.Date.Date == selectedDate.Date && n.UserId == LoginWindow.CurrentUser.Id);
-                //
-                // if (existingNote != null)
-                // {
-                //     existingNote.WasTraining = WorkoutCheckBox.IsChecked ?? false;
-                //     existingNote.Weight = weight;
-                //     existingNote.Description = NotesTextBox.Text;
-                // }
-                // else
-                // {
-                    var newNote = new TrainingNote()
-                    {
-                        // Id = trainingNotes.Count + 1,
-                        // UserId = LoginWindow.CurrentUser.Id,
-                        Date = selectedDate,
-                        WasTraining = WorkoutCheckBox.IsChecked ?? false,
-                        Weight = weight,
-                        Description = NotesTextBox.Text
-                    };
-                //     trainingNotes.Add(newNote);
-                // }
+                var newNote = new TrainingNote()
+                {
+                    Date = selectedDate,
+                    WasTraining = WorkoutCheckBox.IsChecked ?? false,
+                    Weight = weight,
+                    Description = NotesTextBox.Text
+                };
 
                 bool success = await _trainingRequests.SaveNote(newNote);
                 // SaveNotes();

@@ -4,7 +4,6 @@ import com.example.FitPlanner_server.server.DTO.LoginDTO;
 import com.example.FitPlanner_server.server.DTO.RegisterDTO;
 import com.example.FitPlanner_server.server.Model.UserModel;
 import com.example.FitPlanner_server.server.Model.UserRepo;
-import com.example.FitPlanner_server.server.Model.UserRepository;
 import com.example.FitPlanner_server.server.component.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,18 +29,14 @@ public class AuthController {
 
     private UserRepo userRepo;
 
-    private UserRepository userRepository;
-
-    public AuthController(JwtUtil jwtUtil, UserRepository userRepository, UserRepo userRepo) {
+    public AuthController(JwtUtil jwtUtil, UserRepo userRepo) {
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
         this.userRepo = userRepo;
     }
 
     @PostMapping("/auth/register")
     public ResponseEntity<?> register(@RequestBody RegisterDTO registerUser)
     {
-        //UserModel userModel = userRepository.findByUsername(registerUser.getUsername());
         UserModel user = userRepo.findByUsername(registerUser.getUsername());
         if(user == null)
         {
@@ -58,7 +53,6 @@ public class AuthController {
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginUser)
     {
-        //UserModel userModel = userRepository.findByUsername(loginUser.getUsername());
         UserDetails userDetails = null;
         try
         {
@@ -77,15 +71,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Помилка входу");
         }
         String token = jwtUtil.generateToken(userDetails.getUsername());
-        /*if(userModel == null)
-        {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        if(loginUser.getPassword().equals(userModel.getPassword()))
-        {
-            return ResponseEntity.ok("User logged in successfully");
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");*/
         return ResponseEntity.ok(token);
     }
 }

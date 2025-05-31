@@ -79,7 +79,7 @@
             <TabItem Header="Вхід">
                 <StackPanel Margin="20">
                     <TextBlock Text="Вхід до системи" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,20"/>
-                    <TextBlock Text="Email:" Margin="0,0,0,5"/>
+                    <TextBlock Text="Login:" Margin="0,0,0,5"/>
                     <TextBox x:Name="LoginEmailTextBox" Margin="0,0,0,15"/>
                     <TextBlock Text="Пароль:" Margin="0,0,0,5"/>
                     <PasswordBox x:Name="LoginPasswordBox" Margin="0,0,0,20"/>
@@ -91,7 +91,7 @@
                     <TextBlock Text="Реєстрація" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,20"/>
                     <TextBlock Text="Ім'я:" Margin="0,0,0,5"/>
                     <TextBox x:Name="RegisterNameTextBox" Margin="0,0,0,15"/>
-                    <TextBlock Text="Email:" Margin="0,0,0,5"/>
+                    <TextBlock Text="Login:" Margin="0,0,0,5"/>
                     <TextBox x:Name="RegisterEmailTextBox" Margin="0,0,0,15"/>
                     <TextBlock Text="Пароль:" Margin="0,0,0,5"/>
                     <PasswordBox x:Name="RegisterPasswordBox" Margin="0,0,0,20"/>

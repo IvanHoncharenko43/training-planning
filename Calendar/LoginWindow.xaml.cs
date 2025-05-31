@@ -80,18 +80,6 @@ namespace Calendar
             string email = LoginEmailTextBox.Text;
             string password = LoginPasswordBox.Password;
             await Login(email, password);
-            /*var user = users.Find(u => u.Email == email && u.Password == password);
-            if (user != null)
-            {
-                CurrentUser = user;
-                MenuWindow menuWindow = new MenuWindow();
-                menuWindow.Show();
-                Close();
-            }
-            else
-            {
-                MessageBox.Show("Невірний email або пароль!", "Помилка входу", MessageBoxButton.OK, MessageBoxImage.Error);
-            }*/
         }
 
         private async Task Login(string username, string password)
@@ -137,12 +125,6 @@ namespace Calendar
                 MessageBox.Show("Заповніть усі поля!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-
-            /*if (users.Exists(u => u.Email == email))
-            {
-                MessageBox.Show("Користувач із таким email уже існує!", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }*/
             await Register(name, email, password);
         }
 
@@ -163,7 +145,6 @@ namespace Calendar
                 {
                     MessageBox.Show("Реєстрація успішна! Тепер увійдіть.", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
                     CurrentUser.Name = name;
-                    // CurrentUser.Username = username;
                 }
                 else
                 {
